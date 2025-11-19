@@ -15,10 +15,12 @@ import {
   View,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { getProductById, updateProduct } from '../services/database';
+import { getProductById } from '../services/database';
+import { useProductStore } from '../store/productStore';
 
 export default function EditProduct() {
   const { id } = useLocalSearchParams();
+  const { updateProduct } = useProductStore();
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
 
