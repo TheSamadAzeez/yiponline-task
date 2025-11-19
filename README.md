@@ -1,6 +1,6 @@
-# Storekeeper App - HNG13 Stage 2 Mobile Track
+# Storekeeper App - YIPONLINE - TASK (case study)
 
-A fully functional inventory management mobile application built with React Native and Expo that helps users manage their product inventory locally using SQLite database.
+A fully functional inventory management mobile application built with React Native and Expo that helps users manage their product inventory locally using persistent state management.
 
 ## 🔗 Quick Links
 
@@ -8,22 +8,24 @@ A fully functional inventory management mobile application built with React Nati
 | ------------------------ | ----------------------------------------------------------------------------------------------------------- |
 | 📱 **APK**               | [View APK](https://appetize.io/app/b_33xbvxuicgla7bw75zrewtb2qq)                                            |
 | 🎬 **Demo Video**        | [Watch on Google Drive](https://drive.google.com/file/d/1wuGqo7TUORnjfkauEWi3FaHs83R09m7P/view?usp=sharing) |
-| 💻 **GitHub Repository** | [View Source Code](https://github.com/TheSamadAzeez/hng13-stage2-mobile)                                    |
+| 💻 **GitHub Repository** | [View Source Code](https://github.com/TheSamadAzeez/yiponline-task)                                         |
 
 ## 📱 Features
 
 - ✅ **CRUD Operations**: Create, Read, Update, and Delete products
-- ✅ **Local SQLite Database**: Persistent data storage using Expo SQLite
+- ✅ **State Management**: Centralized state management using Zustand
 - ✅ **Camera Integration**: Capture product images using device camera
 - ✅ **Gallery Picker**: Select product images from device gallery
 - ✅ **Search Functionality**: Search products by name in real-time
 - ✅ **Product Details**: View comprehensive product information
-- ✅ **Edit Products**: Update product information including image, name, quantity, and price
+- ✅ **Edit Products**: Dedicated full-screen edit page for updating product information
+- ✅ **Product Limit**: Maximum 5 products with visual counter and limit notifications
+- ✅ **Product Limit Notification**: Modal alert when attempting to exceed product limit
 - ✅ **Delete Confirmation**: Safe deletion with confirmation modal
 - ✅ **Empty State**: User-friendly empty state when no products exist
 - ✅ **Pull to Refresh**: Refresh product list with pull-down gesture
 - ✅ **Responsive UI**: Clean and modern interface following Material Design principles
-- ✅ **Dark Mode Ready**: Theme support for light and dark modes
+- ✅ **Visual Feedback**: Product counter badge showing current/maximum products
 
 ## 🎯 Product Information
 
@@ -40,7 +42,7 @@ Each product includes:
 
 - **Framework**: React Native with Expo SDK 54
 - **Navigation**: Expo Router 6
-- **Database**: Expo SQLite 16
+- **State Management**: Zustand (for global state and data management)
 - **Styling**: NativeWind (TailwindCSS for React Native)
 - **Language**: TypeScript
 - **Image Handling**: Expo Image Picker, Expo File System
@@ -59,8 +61,8 @@ Each product includes:
 1. **Clone the repository**
 
    ```bash
-   git clone https://github.com/TheSamadAzeez/hng13-stage2-mobile.git
-   cd hng13-stage2-mobile
+   git clone https://github.com/TheSamadAzeez/yiponline-task.git
+   cd yiponline-task
    ```
 
 2. **Install dependencies**
@@ -83,15 +85,7 @@ Each product includes:
    - Scan the QR code with Expo Go app (Android)
    - Scan the QR code with Camera app (iOS)
 
-## 🎥 Demo & Downloads
-
-### � Download APK
-
-Download the release APK to install and test the app on your Android device:
-
-**[Download Storekeeper App APK](YOUR_APK_LINK_HERE)**
-
-> **Note**: You may need to enable "Install from Unknown Sources" in your Android settings to install the APK.
+## 🎥 Demo
 
 ### �📹 Demo Video
 
@@ -110,22 +104,25 @@ _The video demonstrates:_
 
 ### 🔗 GitHub Repository
 
-**Public Repository**: [https://github.com/TheSamadAzeez/hng13-stage2-mobile](https://github.com/TheSamadAzeez/hng13-stage2-mobile)
+**Public Repository**: [https://github.com/TheSamadAzeez/yiponline-task](https://github.com/TheSamadAzeez/yiponline-task)
 
 > The repository contains complete source code, configuration files, and this README.
 
 ## 📂 Project Structure
 
 ```
-hng13-stage2-mobile/
+yiponline-task/
 ├── app/                      # App screens and navigation
 │   ├── _layout.tsx          # Root layout with Stack navigator
 │   ├── index.tsx            # Product list screen (Home)
 │   ├── add-product.tsx      # Add new product screen
+│   ├── edit-product.tsx     # Edit product screen (full-screen)
 │   └── details.tsx          # Product details screen
-├── services/                 # Business logic and data management
-│   └── database.ts          # SQLite database service with CRUD operations
+├── store/                    # State management
+│   └── productStore.ts      # Zustand store for product state and CRUD operations
 ├── components/              # Reusable UI components
+│   ├── ProductLimitNotification.tsx  # Product limit modal
+│   └── ...                  # Other components
 ├── assets/                  # Images, icons, and static files
 ├── app.json                 # Expo configuration
 ├── package.json             # Dependencies and scripts
@@ -138,45 +135,44 @@ hng13-stage2-mobile/
 ### 1. Product List Screen (Home)
 
 - Displays all products in a scrollable list
+- Product counter badge showing current/maximum products (X/5 format)
 - Search bar to filter products by name
 - Empty state when no products exist
-- Floating action button to add new products
+- Floating action button to add new products (disabled when limit reached)
 - Pull-to-refresh functionality
+- Product limit notification modal
 
 ### 2. Add Product Screen
 
 - Form to input product details
 - Image picker with camera and gallery options
 - Validation for all fields
+- Product limit check before saving
+- Product limit notification modal when limit reached
 - Save button to create new product
 
 ### 3. Product Details Screen
 
 - Full product information display
 - Product image (or placeholder)
-- Edit button to modify product
+- Edit button to navigate to edit screen
 - Delete button with confirmation modal
 
-### 4. Edit Product Modal
+### 4. Edit Product Screen
 
-- Full-screen modal for editing
+- Dedicated full-screen page for editing
 - Pre-filled form with existing data
-- Image update option
+- Image update option with camera/gallery picker
+- Form validation
 - Save changes button
+- Close button to cancel editing
 
-## 🗄️ Database Schema
+### 5. Product Limit Notification Modal
 
-```sql
-CREATE TABLE products (
-  id INTEGER PRIMARY KEY AUTOINCREMENT,
-  name TEXT NOT NULL,
-  quantity INTEGER NOT NULL,
-  price REAL NOT NULL,
-  imageUri TEXT,
-  createdAt TEXT DEFAULT CURRENT_TIMESTAMP,
-  updatedAt TEXT DEFAULT CURRENT_TIMESTAMP
-);
-```
+- Clean modal design with icon and message
+- Appears when attempting to add products beyond the 5-product limit
+- Informative message about the product limit
+- Dismissible with "Got it" button
 
 ## 🔧 Configuration
 
@@ -185,7 +181,6 @@ CREATE TABLE products (
 The app is configured with proper Android and iOS settings including:
 
 - Permissions for camera and media library
-- SQLite plugin configuration
 - App icons and splash screens
 - Build settings
 
@@ -242,37 +237,30 @@ The APK will be available for download from your Expo dashboard.
 
 ## 📝 Task Requirements Checklist
 
-- ✅ Fully functional app with local database CRUD implementation
+- ✅ Fully functional app with state management and CRUD implementation
 - ✅ Ability to add, view, edit, and delete products
 - ✅ Native camera integration for adding product images
 - ✅ Clean, responsive UI suitable for store management
-- ✅ SQLite database (not local storage like Hive/SharedPreferences)
+- ✅ Zustand state management for centralized data handling
 - ✅ Product name, quantity, price, and optional image fields
 - ✅ GitHub Repository with complete source code
 - ✅ Demo Video (2-4 minutes)
-- ✅ README with APK link and all relevant information
+- ✅ README with all relevant information
 
 ## 👨‍💻 Developer - Azeez Samad
 
-## 💪 Slack ID - @Redox
-
-- HNG Internship - Mobile Track
-- Stage 2 Task Submission
-
-## 📄 License
-
-This project is part of the HNG Internship program.
+- Yiponline Task Submission
 
 ## 🙏 Acknowledgments
 
-- HNG Internship Team
+- Yiponline Team
 - Expo Team for excellent documentation
 - React Native Community
 
 ---
 
-**Submission Date**: October 29, 2025
+**Submission Date**: October 19, 2025
 
-**Task**: Mobile Track Stage 2 - Storekeeper App
+**Task**: Yiponline Case Study
 
 **Contact**: azeezsamad2004@gmail.com
