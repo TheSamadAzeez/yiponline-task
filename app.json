@@ -1,13 +1,10 @@
 {
   "expo": {
     "name": "Storekeeper App",
-    "slug": "hng13-stage2-mobile",
+    "slug": "yiponline-task",
     "version": "1.0.0",
-    "scheme": "hng13-stage2-mobile",
-    "platforms": [
-      "ios",
-      "android"
-    ],
+    "scheme": "yiponline-task",
+    "platforms": ["ios", "android"],
     "web": {
       "bundler": "metro",
       "output": "static",
@@ -15,7 +12,6 @@
     },
     "plugins": [
       "expo-router",
-      "expo-sqlite",
       [
         "expo-image-picker",
         {
@@ -36,9 +32,7 @@
       "resizeMode": "contain",
       "backgroundColor": "#4A90E2"
     },
-    "assetBundlePatterns": [
-      "**/*"
-    ],
+    "assetBundlePatterns": ["**/*"],
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.hng13.storekeeperapp",
