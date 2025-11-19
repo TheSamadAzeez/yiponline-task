@@ -14,14 +14,17 @@ import {
   View,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { createProduct } from '../services/database';
+import { useProductStore } from '../store/productStore';
+import ProductLimitNotification from '../components/ProductLimitNotification';
 
 export default function AddProduct() {
+  const { createProduct, checkProductLimit } = useProductStore();
   const [name, setName] = useState('');
   const [quantity, setQuantity] = useState('');
   const [price, setPrice] = useState('');
   const [imageUri, setImageUri] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+  const [showLimitNotification, setShowLimitNotification] = useState(false);
 
   const requestPermissions = async () => {
     const { status: cameraStatus } = await ImagePicker.requestCameraPermissionsAsync();
@@ -113,21 +116,31 @@ export default function AddProduct() {
       return;
     }
 
+    // Check product limit before creating
+    if (checkProductLimit()) {
+      setShowLimitNotification(true);
+      return;
+    }
+
     try {
       setLoading(true);
-      await createProduct({
+      const success = await createProduct({
         name: name.trim(),
         quantity: Number(quantity),
         price: Number(price),
         imageUri: imageUri || undefined,
       });
 
-      Alert.alert('Success', 'Product added successfully!', [
-        {
-          text: 'OK',
-          onPress: () => router.back(),
-        },
-      ]);
+      if (success) {
+        Alert.alert('Success', 'Product added successfully!', [
+          {
+            text: 'OK',
+            onPress: () => router.back(),
+          },
+        ]);
+      } else {
+        setShowLimitNotification(true);
+      }
     } catch (error) {
       console.error('Error saving product:', error);
       Alert.alert('Error', 'Failed to save product. Please try again.');
@@ -247,6 +260,12 @@ export default function AddProduct() {
             </Text>
           </TouchableOpacity>
         </View>
+
+        {/* Product Limit Notification */}
+        <ProductLimitNotification
+          visible={showLimitNotification}
+          onClose={() => setShowLimitNotification(false)}
+        />
       </KeyboardAvoidingView>
     </SafeAreaView>
   );
