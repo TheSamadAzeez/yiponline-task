@@ -90,7 +90,7 @@ Each product includes:
 
 Watch the full app walkthrough and features demonstration (2-4 minutes):
 
-**[🎬 Watch Demo Video on Google Drive](YOUR_GOOGLE_DRIVE_VIDEO_LINK_HERE)**
+**[🎬 Watch Demo Video on Google Drive](https://drive.google.com/file/d/1cIiCczWs0iIsSC7uBdkMBfbj8h9IBlks/view?usp=sharing)**
 
 _The video demonstrates:_
 
@@ -243,7 +243,7 @@ The APK will be available for download from your Expo dashboard.
 - ✅ Zustand state management for centralized data handling
 - ✅ Product name, quantity, price, and optional image fields
 - ✅ GitHub Repository with complete source code
-- ✅ Demo Video (2-4 minutes)
+- ✅ Demo Video (1-2 minutes)
 - ✅ README with all relevant information
 
 ## 👨‍💻 Developer - Azeez Samad
