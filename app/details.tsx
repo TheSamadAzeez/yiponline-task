@@ -11,19 +11,18 @@ import {
   View,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { Product, getProductById } from '../services/database';
-import { useProductStore } from '../store/productStore';
+import { Product, useProductStore } from '../store/productStore';
 
 export default function Details() {
   const { id } = useLocalSearchParams();
-  const { deleteProduct } = useProductStore();
+  const { deleteProduct, getProductById } = useProductStore();
   const [product, setProduct] = useState<Product | null>(null);
   const [loading, setLoading] = useState(true);
 
-  const loadProduct = useCallback(async () => {
+  const loadProduct = useCallback(() => {
     try {
       setLoading(true);
-      const productData = await getProductById(Number(id));
+      const productData = getProductById(Number(id));
       if (productData) {
         setProduct(productData);
       } else {
@@ -35,7 +34,7 @@ export default function Details() {
     } finally {
       setLoading(false);
     }
-  }, [id]);
+  }, [id, getProductById]);
 
   useEffect(() => {
     loadProduct();
@@ -53,9 +52,9 @@ export default function Details() {
         {
           text: 'Delete',
           style: 'destructive',
-          onPress: async () => {
+          onPress: () => {
             try {
-              await deleteProduct(Number(id));
+              deleteProduct(Number(id));
               Alert.alert('Success', 'Product deleted successfully', [
                 {
                   text: 'OK',

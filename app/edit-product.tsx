@@ -15,12 +15,11 @@ import {
   View,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { getProductById } from '../services/database';
 import { useProductStore } from '../store/productStore';
 
 export default function EditProduct() {
   const { id } = useLocalSearchParams();
-  const { updateProduct } = useProductStore();
+  const { updateProduct, getProductById } = useProductStore();
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
 
@@ -30,10 +29,10 @@ export default function EditProduct() {
   const [editPrice, setEditPrice] = useState('');
   const [editImageUri, setEditImageUri] = useState<string | null>(null);
 
-  const loadProduct = useCallback(async () => {
+  const loadProduct = useCallback(() => {
     try {
       setLoading(true);
-      const productData = await getProductById(Number(id));
+      const productData = getProductById(Number(id));
       if (productData) {
         setEditName(productData.name);
         setEditQuantity(productData.quantity.toString());
@@ -48,7 +47,7 @@ export default function EditProduct() {
     } finally {
       setLoading(false);
     }
-  }, [id]);
+  }, [id, getProductById]);
 
   useEffect(() => {
     loadProduct();
@@ -90,14 +89,14 @@ export default function EditProduct() {
     return true;
   };
 
-  const handleSaveEdit = async () => {
+  const handleSaveEdit = () => {
     if (!validateEditForm()) {
       return;
     }
 
     try {
       setSaving(true);
-      await updateProduct(Number(id), {
+      updateProduct(Number(id), {
         name: editName.trim(),
         quantity: Number(editQuantity),
         price: Number(editPrice),

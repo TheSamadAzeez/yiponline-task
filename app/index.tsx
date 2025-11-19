@@ -14,8 +14,7 @@ import {
   View,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { Product, searchProducts } from '../services/database';
-import { useProductStore, MAX_PRODUCTS } from '../store/productStore';
+import { useProductStore, MAX_PRODUCTS, Product } from '../store/productStore';
 import ProductLimitNotification from '../components/ProductLimitNotification';
 
 export default function Index() {
@@ -27,6 +26,7 @@ export default function Index() {
     isAtMaxLimit,
     initializeStore,
     refreshProducts,
+    searchProducts,
   } = useProductStore();
 
   const [filteredProducts, setFilteredProducts] = useState<Product[]>([]);
@@ -35,11 +35,11 @@ export default function Index() {
 
   const initializeApp = useCallback(async () => {
     try {
-      await initializeStore();
+      initializeStore();
       setFilteredProducts(products);
     } catch (error) {
       console.error('Error initializing app:', error);
-      Alert.alert('Error', 'Failed to initialize database');
+      Alert.alert('Error', 'Failed to initialize app');
     }
   }, [initializeStore]);
 
@@ -55,18 +55,14 @@ export default function Index() {
     }
   }, [products, searchQuery]);
 
-  const handleSearch = async (text: string) => {
+  const handleSearch = (text: string) => {
     setSearchQuery(text);
 
     if (text.trim() === '') {
       setFilteredProducts(products);
     } else {
-      try {
-        const results = await searchProducts(text);
-        setFilteredProducts(results);
-      } catch (error) {
-        console.error('Error searching products:', error);
-      }
+      const results = searchProducts(text);
+      setFilteredProducts(results);
     }
   };
 

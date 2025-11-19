@@ -111,7 +111,7 @@ export default function AddProduct() {
     return true;
   };
 
-  const handleSaveProduct = async () => {
+  const handleSaveProduct = () => {
     if (!validateForm()) {
       return;
     }
@@ -124,7 +124,7 @@ export default function AddProduct() {
 
     try {
       setLoading(true);
-      const success = await createProduct({
+      const success = createProduct({
         name: name.trim(),
         quantity: Number(quantity),
         price: Number(price),
