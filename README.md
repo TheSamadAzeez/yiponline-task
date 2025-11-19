@@ -6,8 +6,7 @@ A fully functional inventory management mobile application built with React Nati
 
 | Resource                 | Link                                                                                                        |
 | ------------------------ | ----------------------------------------------------------------------------------------------------------- |
-| 📱 **APK**               | [View APK](https://appetize.io/app/b_33xbvxuicgla7bw75zrewtb2qq)                                            |
-| 🎬 **Demo Video**        | [Watch on Google Drive](https://drive.google.com/file/d/1wuGqo7TUORnjfkauEWi3FaHs83R09m7P/view?usp=sharing) |
+| 🎬 **Demo Video**        | [Watch on Google Drive](https://drive.google.com/file/d/1cIiCczWs0iIsSC7uBdkMBfbj8h9IBlks/view?usp=sharing) |
 | 💻 **GitHub Repository** | [View Source Code](https://github.com/TheSamadAzeez/yiponline-task)                                         |
 
 ## 📱 Features
