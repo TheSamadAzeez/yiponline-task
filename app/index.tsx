@@ -14,44 +14,46 @@ import {
   View,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { Product, getAllProducts, initDatabase, searchProducts } from '../services/database';
+import { Product, searchProducts } from '../services/database';
+import { useProductStore, MAX_PRODUCTS } from '../store/productStore';
+import ProductLimitNotification from '../components/ProductLimitNotification';
 
 export default function Index() {
-  const [products, setProducts] = useState<Product[]>([]);
+  const {
+    products,
+    productCount,
+    loading,
+    refreshing,
+    isAtMaxLimit,
+    initializeStore,
+    refreshProducts,
+  } = useProductStore();
+
   const [filteredProducts, setFilteredProducts] = useState<Product[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
-  const [loading, setLoading] = useState(true);
-  const [refreshing, setRefreshing] = useState(false);
+  const [showLimitNotification, setShowLimitNotification] = useState(false);
 
   const initializeApp = useCallback(async () => {
     try {
-      await initDatabase();
-      await loadProducts();
+      await initializeStore();
+      setFilteredProducts(products);
     } catch (error) {
       console.error('Error initializing app:', error);
       Alert.alert('Error', 'Failed to initialize database');
     }
-  }, []);
+  }, [initializeStore]);
 
-  // Initialize database on mount
+  // Initialize store on mount
   useEffect(() => {
     initializeApp();
   }, [initializeApp]);
 
-  const loadProducts = async () => {
-    try {
-      setLoading(true);
-      const allProducts = await getAllProducts();
-      setProducts(allProducts);
-      setFilteredProducts(allProducts);
-    } catch (error) {
-      console.error('Error loading products:', error);
-      Alert.alert('Error', 'Failed to load products');
-    } finally {
-      setLoading(false);
-      setRefreshing(false);
+  // Update filtered products when products change
+  useEffect(() => {
+    if (searchQuery.trim() === '') {
+      setFilteredProducts(products);
     }
-  };
+  }, [products, searchQuery]);
 
   const handleSearch = async (text: string) => {
     setSearchQuery(text);
@@ -69,8 +71,15 @@ export default function Index() {
   };
 
   const onRefresh = () => {
-    setRefreshing(true);
-    loadProducts();
+    refreshProducts();
+  };
+
+  const handleAddProductPress = () => {
+    if (isAtMaxLimit) {
+      setShowLimitNotification(true);
+    } else {
+      router.push('/add-product');
+    }
   };
 
   const renderProductItem = ({ item }: { item: Product }) => (
@@ -131,7 +140,13 @@ export default function Index() {
       <View className="bg-[#4A90E2] px-4 py-6 shadow-md">
         <View className="flex-row items-center justify-between">
           <Text className="text-xl font-bold text-white">Inventory</Text>
-          <View className="flex-row items-center gap-2"></View>
+          <View className="flex-row items-center gap-2">
+            <View className="rounded-full bg-white/20 px-3 py-1">
+              <Text className="text-sm font-semibold text-white">
+                {productCount} / {MAX_PRODUCTS} Products Added
+              </Text>
+            </View>
+          </View>
         </View>
       </View>
 
@@ -163,8 +178,10 @@ export default function Index() {
 
       {/* Floating Action Button */}
       <TouchableOpacity
-        onPress={() => router.push('/add-product')}
-        className="absolute bottom-16 right-6 h-14 w-14 items-center justify-center rounded-full bg-[#4A90E2] shadow-lg"
+        onPress={handleAddProductPress}
+        className={`absolute bottom-16 right-6 h-14 w-14 items-center justify-center rounded-full shadow-lg ${
+          isAtMaxLimit ? 'bg-gray-400' : 'bg-[#4A90E2]'
+        }`}
         style={{
           shadowColor: '#000',
           shadowOffset: { width: 0, height: 2 },
@@ -174,6 +191,12 @@ export default function Index() {
         }}>
         <Ionicons name="add" size={32} color="white" />
       </TouchableOpacity>
+
+      {/* Product Limit Notification */}
+      <ProductLimitNotification
+        visible={showLimitNotification}
+        onClose={() => setShowLimitNotification(false)}
+      />
     </SafeAreaView>
   );
 }
