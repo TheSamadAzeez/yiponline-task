@@ -11,10 +11,12 @@ import {
   View,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { Product, deleteProduct, getProductById } from '../services/database';
+import { Product, getProductById } from '../services/database';
+import { useProductStore } from '../store/productStore';
 
 export default function Details() {
   const { id } = useLocalSearchParams();
+  const { deleteProduct } = useProductStore();
   const [product, setProduct] = useState<Product | null>(null);
   const [loading, setLoading] = useState(true);
 
